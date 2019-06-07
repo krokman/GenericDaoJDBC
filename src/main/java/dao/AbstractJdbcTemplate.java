@@ -3,6 +3,7 @@ package dao;
 import dao.interfaces.GenericDao;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import javax.persistence.Table;
 import java.lang.reflect.Field;
 import java.util.List;
 
@@ -14,17 +15,15 @@ public class AbstractJdbcTemplate<T> implements GenericDao<T> {
 	private BeanWrapperRowMapper<T> beanWrapperRowMapper;
 	private String tableName;
 
-	public AbstractJdbcTemplate(Class<T> clazz, String tableName) {
+	public AbstractJdbcTemplate(Class<T> clazz) {
 		this.clazz = clazz;
 		beanWrapperRowMapper = new BeanWrapperRowMapper<>(clazz);
-		this.tableName = tableName;
+		this.tableName = clazz.getAnnotation(Table.class).name();
 	}
 
 	public List<T> getAll() {
 		String query = "SELECT * FROM " + tableName;
-		List<T> c = jdbcTemplate.query(query, beanWrapperRowMapper);
-
-		return c;
+		return jdbcTemplate.query(query, beanWrapperRowMapper);
 	}
 
 	public T save(T t) {
@@ -34,9 +33,9 @@ public class AbstractJdbcTemplate<T> implements GenericDao<T> {
 	}
 
 	public T get(Long id) {
-		T c = jdbcTemplate.queryForObject(
+		return jdbcTemplate.queryForObject(
 				"SELECT * FROM " + tableName + " WHERE ID=" + id, beanWrapperRowMapper);
-		return c;
+
 	}
 
 	public T update(T t) {
@@ -45,7 +44,6 @@ public class AbstractJdbcTemplate<T> implements GenericDao<T> {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < values.length; i++) {
 			sb.append(columns[i]).append("=").append(values[i]).append(", ");
-
 		}
 		sb.deleteCharAt(sb.length() - 2);
 		String query = ("UPDATE " + tableName + " SET " + sb + "WHERE ID=" + getValuesOfTObject(t).substring(1, 2));

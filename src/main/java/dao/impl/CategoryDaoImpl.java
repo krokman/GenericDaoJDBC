@@ -6,6 +6,6 @@ import model.Category;
 
 public class CategoryDaoImpl extends AbstractJdbcTemplate<Category> implements CategoryDao {
 	public CategoryDaoImpl() {
-		super(Category.class, "TEST");
+		super(Category.class);
 	}
 }

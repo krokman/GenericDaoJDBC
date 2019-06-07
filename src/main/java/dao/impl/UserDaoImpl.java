@@ -6,6 +6,6 @@ import model.User;
 
 public class UserDaoImpl extends AbstractJdbcTemplate<User> implements UserDao {
 	public UserDaoImpl() {
-		super(User.class, "USERS");
+		super(User.class);
 	}
 }

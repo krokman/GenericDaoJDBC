@@ -1,6 +1,10 @@
 package model;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "TEST")
 public class Category {
 
 	private Long id;
